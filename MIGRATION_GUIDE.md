@@ -1,208 +1,70 @@
-# Migration Guide: Upgrading Your On-Device AI Intelligence Agent
+Your On-Device AI Intelligence (DEA)
 
-This guide helps you migrate from your original codebase to the enhanced version.
 
-## 📋 What Changed
-
-### Major Improvements
-
-1. **Enhanced AIProcessor** (analyzer.py)
-   - ✅ Retry logic with exponential backoff (3 attempts)
-   - ✅ Complete response validation
-   - ✅ Multiple JSON parsing strategies
-   - ✅ Comprehensive error handling
-   - ✅ Statistics tracking
-   - ✅ Configurable everything
-
-2. **Robust Collector** (collector.py)
-   - ✅ Retry logic for failed requests
-   - ✅ Better error handling
-   - ✅ Rate limiting
-   - ✅ Deduplication
-   - ✅ Better metadata extraction
-
-3. **Professional Formatter** (formatter.py)
-   - ✅ Modern, responsive HTML design
-   - ✅ Color-coded by DRAM impact
-   - ✅ Rich statistics dashboard
-   - ✅ Better visual hierarchy
-
-4. **Enhanced History** (history.py)
-   - ✅ Trend detection
-   - ✅ CSV export
-   - ✅ Search functionality
-   - ✅ Better context generation
-
-5. **Reliable Mailer** (mailer.py)
-   - ✅ Retry logic
-   - ✅ Attachment support
-   - ✅ HTML/text alternative
-   - ✅ Better error messages
-
-6. **Orchestrated Pipeline** (main.py)
-   - ✅ Comprehensive logging
-   - ✅ Phase-by-phase execution
-   - ✅ Statistics reporting
-   - ✅ Test mode
-   - ✅ Error notifications
-
-## 🔄 Migration Steps
-
-### Step 1: Backup Your Current System
-
-```bash
-# Backup your current code
-cp -r your-project/ your-project-backup/
-
-# Backup your data
-cp data/history.json data/history.json.backup
-```
-
-### Step 2: Update Files
-
-Replace these files with the enhanced versions:
-
-```bash
-# Core files (replace completely)
-main.py → new main.py
-src/analyzer.py → new src/analyzer.py
-src/collector.py → new src/collector.py
-src/formatter.py → new src/formatter.py
-src/history.py → new src/history.py
-src/mailer.py → new src/mailer.py
-
-# New files (add these)
-src/__init__.py → NEW
-.env.example → NEW (or update)
-README.md → NEW (or merge)
-```
-
-### Step 3: Update Configuration
-
-Your existing `config/config.yaml` should work, but you can enhance it:
-
-```yaml
-# Add these optional settings to your config.yaml
-system:
-  relevance_threshold: 60
-  context_days: 7
-  model_name: "gemini-2.0-flash-lite"  # <-- Add this if not present
-
-# Your existing sources still work
-sources:
-  arxiv_queries: [...]
-  rss_feeds: [...]
-
-# Your existing email config still works
-email:
-  recipients: [...]
-```
-
-### Step 4: Update Environment Variables
-
-Your existing `.env` file should work, but ensure it has:
-
-```bash
-# Required (you already have this)
-GOOGLE_API_KEY=your-key
-
-# Optional (you may already have these)
-SMTP_SERVER=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your-email@gmail.com
-SMTP_PASSWORD=your-app-password
-```
-
-### Step 5: Install New Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-New dependencies added:
-- `PyYAML` (for config)
-- `colorlog` (optional, for better logging)
-
-### Step 6: Test the Migration
-
-```bash
-# Test configuration
-python main.py test
-
-# If test passes, run the pipeline
-python main.py
-```
-
-## 📊 Compatibility Matrix
-
-| Feature | Old Version | New Version | Compatible? |
-|---------|-------------|-------------|-------------|
-| `config.yaml` format | ✅ | ✅ | ✅ Yes |
-| `.env` variables | ✅ | ✅ | ✅ Yes |
-| `history.json` format | ✅ | ✅ | ✅ Yes |
-| Import statements | ✅ | ✅ | ✅ Yes |
-| API responses | Basic | Enhanced | ✅ Backward compatible |
-
-## 🔧 Code Changes Required
-
-### If You Have Custom Code
-
-#### 1. Importing AIProcessor
-
-**Old:**
-```python
-from src.analyzer import AIProcessor
-processor = AIProcessor(api_key=api_key, model_name="gemini-2.0-flash-lite")
-```
-
-**New (still works the same):**
-```python
-from src.analyzer import AIProcessor, AIProcessorConfig
-
-# Option 1: Simple (same as before)
-processor = AIProcessor(api_key=api_key, model_name="gemini-2.0-flash-lite")
-
-# Option 2: With custom config
-config = AIProcessorConfig()
-config.MAX_RETRIES = 5
-processor = AIProcessor(api_key=api_key, config=config)
-```
-
-#### 2. Processing Articles
-
-**Old:**
-```python
-result = processor.process_article(article)
-score = result.get('relevance_score', 0)
-```
-
-**New (backward compatible + enhancements):**
-```python
-result = processor.process_article(article)
-
-# Old fields still work
-score = result.get('relevance_score', 0)
-platform = result.get('platform')
-
-# New fields available
-status = result.get('status', 'success')
-model_size = result.get('model_size', 'Unknown')
-
-# Check for failures
-if result.get('status') == 'failed':
-    logger.warning(f"Analysis failed: {result['error_reason']}")
-```
-
+┌──────────────────────────────────────────────────────────────┐
+│     PUBLICATION-GRADE AI RESEARCH INTELLIGENCE SYSTEM        │
+│                (For Users)                          │
+└──────────────────────────────────────────────────────────────┘
+                            │
+        ┌───────────────────┴───────────────────┐
+        │                                       │
+┌───────▼──────────┐                   ┌───────▼──────────┐
+│  Data Ingestion  │                   │  Multi-Model AI  │
+│                  │                   │                  │
+│ • arXiv          │                   │ • Groq (fast)    │
+│ • RSS Feeds      │                   │ • Ollama (local) │
+│ • Web Search     │                   │ • Gemini (backup)│
+└───────┬──────────┘                   └───────┬──────────┘
+        │                                       │
+        └───────────────────┬───────────────────┘
+                            │
+                ┌───────────▼───────────┐
+                │  Knowledge Layer      │
+                │                       │
+                │ • Knowledge Graph     │
+                │ • Vector Store        │
+                │ • CoT Reasoner        │
+                └───────────┬───────────┘
+                            │
+                ┌───────────▼───────────┐
+                │  Graph RAG Engine     │
+                │                       │
+                │ 1. Vector Search      │
+                │ 2. Graph Traversal    │
+                │ 3. Trend Analysis     │
+                │ 4. Context Building   │
+                └───────────┬───────────┘
+                            │
+                ┌───────────▼───────────┐
+                │  AI Analysis          │
+                │  (Multi-stage CoT)    │
+                │                       │
+                │ • Evidence gathering  │
+                │ • Reasoning chain     │
+                │ • Citation tracking   │
+                │ • Confidence scoring  │
+                └───────────┬───────────┘
+                            │
+                ┌───────────▼───────────┐
+                │  Knowledge Update     │
+                │                       │
+                │ • Add to graph        │
+                │ • Update vectors      │
+                │ • Detect trends       │
+                │ • Identify gaps       │
+                └───────────┬───────────┘
+                            │
+                ┌───────────▼───────────┐
+                │  Output Generation    │
+                │                       │
+                │ • HTML Reports        │
+                │ • Email Distribution  │
+                │ • API Responses       │
+                │ • Trend Dashboards    │
+                └───────────────────────┘
 #### 3. Collecting Articles
 
-**Old:**
-```python
-collector = Collector()
-articles = collector.fetch_arxiv(queries)
-articles += collector.fetch_rss(feeds)
-```
-
-**New (enhanced but compatible):**
+**enhanced but compatible:**
 ```python
 from src.collector import Collector, deduplicate_articles
 
@@ -248,12 +110,7 @@ However, we **recommend** these upgrades:
 ### 1. Add Status Checking
 
 ```python
-# OLD: No status check
-result = processor.process_article(article)
-if result['relevance_score'] >= 60:
-    # use result
-
-# NEW: Check status
+Check status
 result = processor.process_article(article)
 if result.get('status') != 'failed' and result['relevance_score'] >= 60:
     # use result
@@ -282,19 +139,6 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 ```
-
-## 📈 Performance Comparison
-
-| Metric | Old Version | New Version |
-|--------|-------------|-------------|
-| Success Rate | ~60-70% | **95-98%** |
-| Error Recovery | None | **3-level retry** |
-| Validation | None | **Complete** |
-| Processing Time | 2-3s/article | 2-3s/article (same) |
-| Failure Handling | Silent | **Logged + Fallback** |
-| Output Fields | 6 | **13+** |
-
-## 🎯 Recommended Post-Migration Steps
 
 ### 1. Review Logs
 
@@ -424,16 +268,7 @@ results = processor.process_batch(
     progress_callback=lambda curr, total, title: 
         print(f"[{curr}/{total}] {title[:40]}...")
 )
-```
 
-## 🎉 Migration Complete!
-
-Your system is now:
-- ✅ More reliable (95%+ success rate)
-- ✅ Better monitored (comprehensive logging)
-- ✅ More maintainable (modular design)
-- ✅ Production-ready (error handling + retry)
-- ✅ Feature-rich (13+ output fields, trends, stats)
 
 ## 📞 Need Help?
 
@@ -442,20 +277,6 @@ Your system is now:
 3. Review README.md for detailed docs
 4. Check ENHANCEMENT_DOCS.md for technical details
 
-## 🔄 Rollback (If Needed)
 
-If you need to rollback:
-
-```bash
-# Stop using new code
-cd your-project-backup/
-
-# Restore old version
-cp -r * ../your-project/
-
-# Your data is safe - history.json is compatible
-```
-
----
 
 **Recommended:** Keep both versions for a week to ensure smooth transition, then remove the backup once confident.
